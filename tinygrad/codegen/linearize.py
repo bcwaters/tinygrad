@@ -224,14 +224,14 @@ def linearize_uop(sink:UOp, skip_check:bool=not __debug__) -> list[UOp]:
   # final rewrite to merge all blocks into one
   sink = graph_rewrite(sink, pm_block_merge, ctx=children)
 
+  print("----------AFTER MERGE------------------")
+  # Print all items in _uops
+  for uop in sink.src:
+      print(uop)
 
   # there should just be one block left, with a few parents with 0 srcs
   assert sink.op is Ops.BLOCK
   _uops = sorted(dedup(sink.src), key=lambda x: x.tuplize)
-
-    # Print all items in _uops
-  for uop in _uops:
-      print(uop)
 
   assert all(len(x.src) == 0 and x.op not in {Ops.BLOCK, Ops.BLOCKSTART, Ops.BLOCKEND, Ops.BLOCKFORK} for x in _uops)
   _uops += sink.arg.lst
