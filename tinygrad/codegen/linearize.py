@@ -149,7 +149,11 @@ def block_reorder(in_block:UOp):
 
 def linearize_uop(sink:UOp, skip_check:bool=not __debug__) -> list[UOp]:
   assert sink.op is Ops.SINK, f"sink isn't sink, it's {sink.op}"
+   # Print all items in _uops
+  for uop in _uops:
+      print(uop)
 
+  print("----------AFTER SINK------------------")
     
   # get children and all block contexts
   temp_block_ctxs: dict[UOp, list[UOp]] = {}
@@ -221,7 +225,7 @@ def linearize_uop(sink:UOp, skip_check:bool=not __debug__) -> list[UOp]:
     # Print all items in _uops
   for uop in _uops:
       print(uop)
-      
+
   assert all(len(x.src) == 0 and x.op not in {Ops.BLOCK, Ops.BLOCKSTART, Ops.BLOCKEND, Ops.BLOCKFORK} for x in _uops)
   _uops += sink.arg.lst
 
