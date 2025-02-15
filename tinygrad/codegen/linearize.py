@@ -149,13 +149,12 @@ def block_reorder(in_block:UOp):
 
 def linearize_uop(sink:UOp, skip_check:bool=not __debug__) -> list[UOp]:
   assert sink.op is Ops.SINK, f"sink isn't sink, it's {sink.op}"
-
-   # Print all items in _uops
+    
+  print("----------Initial Uops------------------")
+  # Print all items in _uops
   for uop in sink.src:
       print(uop)
 
-  print("----------sTART------------------")
-    
   # get children and all block contexts
   temp_block_ctxs: dict[UOp, list[UOp]] = {}
   children: dict[UOp, list[UOp]] = {}
@@ -181,11 +180,7 @@ def linearize_uop(sink:UOp, skip_check:bool=not __debug__) -> list[UOp]:
         this_block_ctx += temp_block_ctxs[s]
     temp_block_ctxs[u] = sorted(dedup(this_block_ctx), key=lambda x: x.tuplize)
 
-   # Print all items in _uops
-  for uop in sink.src:
-      print(uop)
 
-  print("----------AFTER BLOCK CTX------------------")
   # make final block_ctxs, add BLOCKSTART to block_ctxs for IF and RANGE
   block_ctxs: dict[UOp, tuple[UOp, ...]] = {}
   for u in sink.toposort:
@@ -194,7 +189,6 @@ def linearize_uop(sink:UOp, skip_check:bool=not __debug__) -> list[UOp]:
   # TODO: there's probably a clever way to remove this while loop
   while 1:
     sink = graph_rewrite(sink, make_basic_blocks, ctx=(block_ctxs, children))
-
     # add BLOCKFORK (slow!)
     block_parent_count = collections.Counter(flatten([x.src for x in sink.toposort if x.op is Ops.BLOCK]))
     non_block_parents = set(flatten([x.src for x in sink.toposort if x.op is not Ops.BLOCK]))
@@ -203,6 +197,13 @@ def linearize_uop(sink:UOp, skip_check:bool=not __debug__) -> list[UOp]:
 
     if not len(forks): break
     sink = sink.substitute(forks)
+   
+  print("----------AFTER BLOCKFORK------------------")
+  # Print all items in _uops
+  for uop in sink.src:
+      print(uop)
+
+
 
   # combine matching BLOCKENDS
   blockends_to_arg: dict[UOp, list[UOp]] = {}
