@@ -154,7 +154,7 @@ def linearize_uop(sink:UOp, skip_check:bool=not __debug__) -> list[UOp]:
   for uop in sink.src:
       print(uop)
 
-  print("----------AFTER SINK------------------")
+  print("----------sTART------------------")
     
   # get children and all block contexts
   temp_block_ctxs: dict[UOp, list[UOp]] = {}
@@ -181,6 +181,11 @@ def linearize_uop(sink:UOp, skip_check:bool=not __debug__) -> list[UOp]:
         this_block_ctx += temp_block_ctxs[s]
     temp_block_ctxs[u] = sorted(dedup(this_block_ctx), key=lambda x: x.tuplize)
 
+   # Print all items in _uops
+  for uop in sink.src:
+      print(uop)
+
+  print("----------AFTER BLOCK CTX------------------")
   # make final block_ctxs, add BLOCKSTART to block_ctxs for IF and RANGE
   block_ctxs: dict[UOp, tuple[UOp, ...]] = {}
   for u in sink.toposort:
