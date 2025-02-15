@@ -149,8 +149,9 @@ def block_reorder(in_block:UOp):
 
 def linearize_uop(sink:UOp, skip_check:bool=not __debug__) -> list[UOp]:
   assert sink.op is Ops.SINK, f"sink isn't sink, it's {sink.op}"
+
    # Print all items in _uops
-  for uop in _uops:
+  for uop in sink:
       print(uop)
 
   print("----------AFTER SINK------------------")
