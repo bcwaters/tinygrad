@@ -217,7 +217,7 @@ def linearize_uop(sink:UOp, skip_check:bool=not __debug__) -> list[UOp]:
   # there should just be one block left, with a few parents with 0 srcs
   assert sink.op is Ops.BLOCK
   _uops = sorted(dedup(sink.src), key=lambda x: x.tuplize)
-  assert all(len(x.src) == 0 for x in _uops)
+  assert all(x.op not in {Ops.BLOCK, Ops.BLOCKSTART, Ops.BLOCKEND, Ops.BLOCKFORK} for x in _uops)
   _uops += sink.arg.lst
 
   # sanity checks (NOTE: these can cause things to be skipped in BEAM)
