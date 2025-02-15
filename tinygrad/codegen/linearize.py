@@ -212,6 +212,9 @@ def linearize_uop(sink:UOp, skip_check:bool=not __debug__) -> list[UOp]:
   # final rewrite to merge all blocks into one
   sink = graph_rewrite(sink, pm_block_merge, ctx=children)
 
+  for x in _uops:
+    print(f"Op: {x.op}, Source Length: {len(x.src)}")
+    
   # there should just be one block left, with a few parents with 0 srcs
   assert sink.op is Ops.BLOCK
   _uops = sorted(dedup(sink.src), key=lambda x: x.tuplize)
