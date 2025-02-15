@@ -218,6 +218,13 @@ def linearize_uop(sink:UOp, skip_check:bool=not __debug__) -> list[UOp]:
       for u in v: new_forks[u] = out
   sink = sink.substitute(new_forks)
 
+  print("----------AFTER COMBINE BLOCKENDS------------------")
+  # Print all items in _uops
+  for uop in sink.src:
+      print(uop)
+
+
+
   # reorder ops in block for speed
   sink = sink.substitute({u:newu for u in sink.toposort if u.op is Ops.BLOCK and (newu:=block_reorder(u)) is not u})
 
