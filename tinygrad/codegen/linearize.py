@@ -222,11 +222,13 @@ def linearize_uop(sink:UOp, skip_check:bool=not __debug__) -> list[UOp]:
   for k,v in blockends_to_arg.items():
     # NOTE: if any BLOCKEND is the parent of any other with the same arg, this algo fails
     if len(v) > 1:
-      out = UOp(Ops.BLOCKFORK, src=(UOp(Ops.BLOCKEND, src=tuple(flatten(x.src for x in v)),
-                                        arg=BasicBlock(tuple(dedup(flatten([y.arg.ctx for y in v]))), v[0].arg.lst, k)),), arg=len(v))
+      out = UOp(Ops.BLOCKFORK,
+                 src=(UOp(Ops.BLOCKEND, src=tuple(flatten(x.src for x in v)), arg=BasicBlock(tuple(dedup(flatten([y.arg.ctx for y in v]))), v[0].arg.lst, k)),),
+                   arg=len(v))
       for u in v: new_forks[u] = out
   sink = sink.substitute(new_forks)
-
+  for fork in new_forks:
+    print("new fork: ", fork)
   print("\n\n----------AFTER COMBINE BLOCKENDS------------------\n\n")
   # Print all items in _uops
   for uop in sink.src:
