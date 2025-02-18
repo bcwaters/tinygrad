@@ -169,6 +169,11 @@ def linearize_uop(sink:UOp, skip_check:bool=not __debug__) -> list[UOp]:
       elif s.op is Ops.STORE:
         # ugh, deal with non-reduce locals. probably wrong
         if isinstance(s.src[0].dtype, PtrDType) and s.src[0].dtype.local:
+          print("--------non reducelocal store--------")
+          print(s.src[0].dtype)
+          print(s.src[0])
+          print(s)
+          print("-------end non reducelocal store--------")
           idx_context, store_context = temp_block_ctxs[s.src[0]], temp_block_ctxs[s]
           this_block_ctx += [x for x in store_context if x not in idx_context and x.op is Ops.RANGE]
       elif s.op is Ops.ASSIGN:
