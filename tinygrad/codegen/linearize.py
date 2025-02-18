@@ -236,7 +236,10 @@ def linearize_uop(sink:UOp, skip_check:bool=not __debug__) -> list[UOp]:
 
   # reorder ops in block for speed
   sink = sink.substitute({u:newu for u in sink.toposort if u.op is Ops.BLOCK and (newu:=block_reorder(u)) is not u})
-
+  print("----------AFTER REORDER BLOCKENDS------------------")
+  # Print all items in _uops
+  for uop in sink.src:
+      print(uop)
   # final rewrite to merge all blocks into one
   sink = graph_rewrite(sink, pm_block_merge, ctx=children)
 
