@@ -185,6 +185,10 @@ def linearize_uop(sink:UOp, skip_check:bool=not __debug__) -> list[UOp]:
         this_block_ctx += temp_block_ctxs[s]
     temp_block_ctxs[u] = sorted(dedup(this_block_ctx), key=lambda x: x.tuplize)
 
+  print("----------After first pass Uops------------------")
+  # Print all items in _uops
+  for uop in sink.src:
+      print(uop)
 
   # make final block_ctxs, add BLOCKSTART to block_ctxs for IF and RANGE
   block_ctxs: dict[UOp, tuple[UOp, ...]] = {}
