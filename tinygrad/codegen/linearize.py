@@ -150,7 +150,7 @@ def block_reorder(in_block:UOp):
 def linearize_uop(sink:UOp, skip_check:bool=not __debug__) -> list[UOp]:
   assert sink.op is Ops.SINK, f"sink isn't sink, it's {sink.op}"
     
-  print("----------Initial Uops------------------")
+  print("\n\n----------Initial Uops------------------\n\n")
   # Print all items in _uops
   for uop in sink.src:
       print(uop)
@@ -185,7 +185,7 @@ def linearize_uop(sink:UOp, skip_check:bool=not __debug__) -> list[UOp]:
         this_block_ctx += temp_block_ctxs[s]
     temp_block_ctxs[u] = sorted(dedup(this_block_ctx), key=lambda x: x.tuplize)
 
-  print("----------After first pass Uops------------------")
+  print("\n\n----------After first pass Uops------------------\n\n")
   # Print all items in _uops
   for uop in sink.src:
       print(uop)
@@ -207,7 +207,7 @@ def linearize_uop(sink:UOp, skip_check:bool=not __debug__) -> list[UOp]:
     if not len(forks): break
     sink = sink.substitute(forks)
    
-  print("----------AFTER BLOCKFORK------------------")
+  print("\n\n----------AFTER BLOCKFORK------------------\n\n")
   # Print all items in _uops
   for uop in sink.src:
       print(uop)
@@ -227,7 +227,7 @@ def linearize_uop(sink:UOp, skip_check:bool=not __debug__) -> list[UOp]:
       for u in v: new_forks[u] = out
   sink = sink.substitute(new_forks)
 
-  print("----------AFTER COMBINE BLOCKENDS------------------")
+  print("\n\n----------AFTER COMBINE BLOCKENDS------------------\n\n")
   # Print all items in _uops
   for uop in sink.src:
       print(uop)
@@ -236,14 +236,14 @@ def linearize_uop(sink:UOp, skip_check:bool=not __debug__) -> list[UOp]:
 
   # reorder ops in block for speed
   sink = sink.substitute({u:newu for u in sink.toposort if u.op is Ops.BLOCK and (newu:=block_reorder(u)) is not u})
-  print("----------AFTER REORDER BLOCKENDS------------------")
+  print("\n\n----------AFTER REORDER BLOCKENDS------------------\n\n")
   # Print all items in _uops
   for uop in sink.src:
       print(uop)
   # final rewrite to merge all blocks into one
   sink = graph_rewrite(sink, pm_block_merge, ctx=children)
 
-  print("----------AFTER MERGE------------------")
+  print("\n\n----------AFTER MERGE------------------\n\n")
   # Print all items in _uops
   for uop in sink.src:
       print(uop)
